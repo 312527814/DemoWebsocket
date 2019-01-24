@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+@{
+    Layout = null;
+}
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="origin" />
+    <title>关于setInterval的用法 - 最天才 - 博客园</title>
+    <meta property="og:description" content="javascript中的setInterval的函数主要是在制作动画或其他间隔性渲染（操作）效果时，对操作方法按照一定时间间隔进行调用的函数。setInterval的表达式格式主要有：setInter" />
+</head>
+<body>
+    <input type="text" name="name" id="content" value="" />
+    <input type="button" name="name" value="发送" onclick="fu()" />
+
+    <script type="text/javascript">
+        //var ws = new WebSocket("ws://localhost:5000?sid=222");
+
+        function fu() {
+            var msg = document.getElementById("content").value;
+
+            var ws = new WebSocket("ws://localhost:5000?sid=" + Math.random());
+            ws.onopen = () => {
+
+
+                console.log('open');
+                //ws.close();
+            };
+
+            ws.onmessage = (event) => {
+                console.log('new message: ' + event.data);
+            };
+
+            ws.onerror = () => {
+                console.log('error occurred!');
+            };
+
+            ws.onclose = (event) => {
+                console.log('close code=' + event.code);
+            };
+            let n = 0;
+            let timer = setInterval(() => {
+                console.log(ws.readyState + ":" + n);
+                if (ws.readyState == 1) {
+                    var msgObj = {
+                        SenderID: "222",
+                        ReceiverID: "111",
+                        MessageType: "text",
+                        Content: msg
+                    };
+                    ws.send(JSON.stringify(msgObj));
+                    clearInterval(timer);
+                }
+                ++n;
+            }, 0);
+        }
+    </script>
+</body>
+</html>
+
